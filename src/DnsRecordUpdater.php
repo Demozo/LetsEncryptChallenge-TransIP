@@ -29,11 +29,11 @@ class DnsRecordUpdater
         $response = $this->httpClient->patch("domains/{$_SERVER['CERTBOT_DOMAIN']}/dns", [
             'body' => json_encode([
                 'dnsEntry' => [
-                    'name' => '_acme-challenge.',
+                    'name' => '_acme-challenge',
                     'expire' => '60',
                     'type' => 'TXT',
-                    'content' => $_SERVER['CERTBOT_TOKEN']
-                ]
+                    'content' => $_SERVER['CERTBOT_VALIDATION']
+                ],
             ]),
             'headers' => [
                 'Content-Type' => "application/json",

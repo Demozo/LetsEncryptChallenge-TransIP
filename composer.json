@@ -1,12 +1,13 @@
 {
-  "require": {
-    "php": "^8.1",
-    "guzzlehttp/guzzle": "^7.5",
-    "vlucas/phpdotenv": "^5.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "MozoDev\\LetsEncrypt\\": "./src"
+    "require": {
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.5",
+        "vlucas/phpdotenv": "^5.4",
+        "monolog/monolog": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "MozoDev\\LetsEncrypt\\": "./src"
+        }
     }
-  }
 }
