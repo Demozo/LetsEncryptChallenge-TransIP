@@ -26,12 +26,12 @@ class DnsRecordUpdater
     public function updateRecord(): bool {
         $accessToken = $this->createToken();
         $response = $this->httpClient->patch("domains/{$_SERVER['CERTBOT_DOMAIN']}/dns", [
-            'body' => [
+            'body' => json_encode([
                 'name' => '_acme-challenge.',
                 'expire' => '60',
                 'type' => 'TXT',
                 'content' => $_SERVER['CERTBOT_TOKEN']
-            ],
+            ]),
             'headers' => [
                 'Content-Type' => "application/json",
                 'Authorization' => "Bearer {$accessToken}",
