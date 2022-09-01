@@ -5,6 +5,7 @@ namespace MozoDev\LetsEncrypt;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Monolog\ErrorHandler;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -20,8 +21,15 @@ class Program
 
         // Setup logger
         self::$logger = new Logger('LetsEncrypt');
-        self::$logger->pushHandler(new StreamHandler(__DIR__ . '../letsencrypt.log', Level::fromName($_ENV['LOGGING_LEVEL'])));
-        self::$logger->pushHandler(new StreamHandler(STDOUT, Level::fromName($_ENV['LOGGING_LEVEL'])));
+
+        $fileHandler = new StreamHandler(__DIR__ . '/../letsencrypt.log', Level::fromName($_ENV['LOGGING_LEVEL']));
+        $fileHandler->setFormatter(new LineFormatter(allowInlineLineBreaks: true));
+        self::$logger->pushHandler($fileHandler);
+
+        $stdOutHandler = new StreamHandler(STDOUT, Level::fromName($_ENV['LOGGING_LEVEL']));
+        $stdOutHandler->setFormatter(new LineFormatter(allowInlineLineBreaks: true));
+        self::$logger->pushHandler($stdOutHandler);
+
         ErrorHandler::register(self::$logger);
     }
 
