@@ -13,6 +13,7 @@ use Monolog\Logger;
 class Program
 {
     private DnsRecordUpdater $dnsRecordUpdater;
+    private WellKnownUpdater $wellKnownUpdater;
     public static Logger $logger;
 
     public function __construct()
@@ -30,7 +31,7 @@ class Program
         $stdOutHandler->setFormatter(new LineFormatter(allowInlineLineBreaks: true));
         self::$logger->pushHandler($stdOutHandler);
 
-        ErrorHandler::register(self::$logger);
+        ErrorHandler::register(self::$logger); // TODO: If TOKEN present it's DNS otherwise .well-known/.........
     }
 
     public function __destruct()
@@ -46,7 +47,14 @@ class Program
     {
         self::$logger->debug(json_encode($_SERVER, JSON_PRETTY_PRINT));
 
-        $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
+        $result = 'UNKNOWN';
+
+        if(array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
+            $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
+        } else {
+            $result = $this->wellKnownUpdater->updateWellKnown() ? 'DONE' : 'FAILED';
+        }
+
         self::$logger->info("Renewal status: {$result}\n");
     }
 }
