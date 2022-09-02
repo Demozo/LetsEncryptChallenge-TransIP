@@ -50,9 +50,18 @@ class Program
         $result = 'UNKNOWN';
 
         if(array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
+            self::$logger->info('Updating DNS');
             $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
+
+            set_time_limit(180);
+            self::$logger->info('Waiting for 2 minutes');
+            sleep(60);
+            self::$logger->info('1 minute left');
+            sleep(60);
         } else {
+            self::$logger->info('Updating .well-known');
             $result = $this->wellKnownUpdater->updateWellKnown() ? 'DONE' : 'FAILED';
+            sleep(10);
         }
 
         self::$logger->info("Renewal status: {$result}\n");
