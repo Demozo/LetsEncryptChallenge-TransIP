@@ -25,7 +25,7 @@ class DnsRecordUpdater
      */
     public function updateRecord(): bool
     {
-        Program::$logger->info("Updating DNS record to [{$_SERVER['CERTBOT_TOKEN']}]");
+        Program::$logger->info("Updating DNS record to [{$_SERVER['CERTBOT_VALIDATION']}]");
         
         $accessToken = $this->createToken();
         $response = $this->httpClient->patch("domains/{$_SERVER['CERTBOT_DOMAIN']}/dns", [
@@ -34,7 +34,7 @@ class DnsRecordUpdater
                     'name' => '_acme-challenge',
                     'expire' => '60',
                     'type' => 'TXT',
-                    'content' => $_SERVER['CERTBOT_TOKEN']
+                    'content' => $_SERVER['CERTBOT_VALIDATION']
                 ],
             ]),
             'headers' => [

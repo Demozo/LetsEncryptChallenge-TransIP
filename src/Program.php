@@ -48,15 +48,13 @@ class Program
     {
         self::$logger->debug(json_encode($_SERVER, JSON_PRETTY_PRINT));
 
-        $result = 'UNKNOWN';
-
         if(array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
-            self::$logger->info('Starting DNS update');
-            $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
-        } else {
             self::$logger->info('Starting .well-known update');
             $result = $this->wellKnownUpdater->updateWellKnown() ? 'DONE' : 'FAILED';
             sleep(10);
+        } else {
+            self::$logger->info('Starting DNS update');
+            $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
         }
 
         self::$logger->info("Renewal status: {$result}");
