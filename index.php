@@ -15,4 +15,3 @@ if(isset($argv[1]) && $argv[1] === 'cleanup') {
 }
 
 $program->execute();
-echo $_SERVER['CERTBOT_VALIDATION'];

@@ -47,10 +47,15 @@ class Program
         if (array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
             self::$logger->info('Starting .well-known update');
             $result = $this->wellKnownUpdater->updateWellKnown() ? 'DONE' : 'FAILED';
-            sleep(10);
+
+            // Echo CERTBOT_TOKEN, so we can delete the right file in the cleanup step
+            echo $_SERVER['CERTBOT_TOKEN'];
         } else {
             self::$logger->info('Starting DNS update');
             $result = $this->dnsRecordUpdater->updateRecord() ? 'DONE' : 'FAILED';
+
+            // Echo CERTBOT_VALIDATION, so we can match the DNS record and delete it in the cleanup step
+            echo $_SERVER['CERTBOT_VALIDATION'];
         }
 
         self::$logger->info("Renewal status: {$result}");
