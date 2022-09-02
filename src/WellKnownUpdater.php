@@ -27,12 +27,14 @@ class WellKnownUpdater
     private function enableNginxSite(): bool
     {
         shell_exec('ln -s /etc/nginx/sites-available/acme /etc/nginx/sites-enabled/');
+        shell_exec('nginx -s reload');
 
         return file_exists('/etc/nginx/sites-enabled/acme');
     }
 
     private function disableNginxSite(): bool {
         shell_exec('rm /etc/nginx/sites-enabled/acme');
+        shell_exec('nginx -s reload');
 
         return !file_exists('/etc/nginx/sites-enabled/acme');
     }
