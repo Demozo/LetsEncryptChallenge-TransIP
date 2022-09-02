@@ -44,7 +44,7 @@ class Program
     {
         self::$logger->debug(json_encode($_SERVER, JSON_PRETTY_PRINT));
 
-        if(array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
+        if (array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
             self::$logger->info('Starting .well-known update');
             $result = $this->wellKnownUpdater->updateWellKnown() ? 'DONE' : 'FAILED';
             sleep(10);
@@ -60,10 +60,12 @@ class Program
     {
         self::$logger->info('Beginning cleanup procedure');
 
-        $wellKnownResult = $this->wellKnownUpdater->cleanup() ? 'DONE' : 'FAILED';
-        self::$logger->info("Cleaning .well-known status: {$wellKnownResult}");
-
-        $dnsResult = $this->dnsRecordUpdater->cleanup() ? 'DONE' : 'FAILED';
-        self::$logger->info("Cleaning DNS status: {$dnsResult}");
+        if (array_key_exists('CERTBOT_TOKEN', $_SERVER)) {
+            $wellKnownResult = $this->wellKnownUpdater->cleanup() ? 'DONE' : 'FAILED';
+            self::$logger->info("Cleaning .well-known status: {$wellKnownResult}");
+        } else {
+            $dnsResult = $this->dnsRecordUpdater->cleanup() ? 'DONE' : 'FAILED';
+            self::$logger->info("Cleaning DNS status: {$dnsResult}");
+        }
     }
 }
