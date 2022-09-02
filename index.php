@@ -8,4 +8,11 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 $program = new Program();
+
+if(isset($argv[1]) && $argv[1] === 'cleanup') {
+    $program->cleanup();
+    die(0);
+}
+
 $program->execute();
+echo $_SERVER['CERTBOT_VALIDATION'];

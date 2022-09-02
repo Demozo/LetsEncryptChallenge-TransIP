@@ -26,7 +26,7 @@ class DnsRecordUpdater
     public function updateRecord(): bool
     {
         Program::$logger->info("Updating DNS record to [{$_SERVER['CERTBOT_VALIDATION']}]");
-        
+
         $accessToken = $this->createToken();
         $response = $this->httpClient->patch("domains/{$_SERVER['CERTBOT_DOMAIN']}/dns", [
             'body' => json_encode([
@@ -48,6 +48,30 @@ class DnsRecordUpdater
         sleep(60);
         Program::$logger->info('1 minute left');
         sleep(60);
+
+        return $response->getStatusCode() === 204;
+    }
+
+    /**
+     * @throws Exception
+     * @throws GuzzleException
+     */
+    public function cleanup(): bool {
+        $accessToken = $this->createToken();
+        $response = $this->httpClient->delete("domains/{$_SERVER['CERTBOT_DOMAIN']}/dns", [
+            'body' => json_encode([
+                'dnsEntry' => [
+                    'name' => '_acme-challenge',
+                    'expire' => '60',
+                    'type' => 'TXT',
+                    'content' => $_SERVER['CERTBOT_AUTH_OUTPUT']
+                ],
+            ]),
+            'headers' => [
+                'Content-Type' => "application/json",
+                'Authorization' => "Bearer {$accessToken}",
+            ]
+        ]);
 
         return $response->getStatusCode() === 204;
     }

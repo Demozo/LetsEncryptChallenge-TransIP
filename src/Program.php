@@ -28,11 +28,7 @@ class Program
         $fileHandler->setFormatter(new LineFormatter(allowInlineLineBreaks: true));
         self::$logger->pushHandler($fileHandler);
 
-        $stdOutHandler = new StreamHandler(STDOUT, Level::fromName($_ENV['LOGGING_LEVEL']));
-        $stdOutHandler->setFormatter(new LineFormatter(allowInlineLineBreaks: true));
-        self::$logger->pushHandler($stdOutHandler);
-
-        ErrorHandler::register(self::$logger); // TODO: If TOKEN present it's DNS otherwise .well-known/.........
+        ErrorHandler::register(self::$logger);
     }
 
     public function __destruct()
@@ -58,5 +54,16 @@ class Program
         }
 
         self::$logger->info("Renewal status: {$result}");
+    }
+
+    public function cleanup(): void
+    {
+        self::$logger->info('Beginning cleanup procedure');
+
+        $wellKnownResult = $this->wellKnownUpdater->cleanup() ? 'DONE' : 'FAILED';
+        self::$logger->info("Cleaning .well-known status: {$wellKnownResult}");
+
+        $dnsResult = $this->dnsRecordUpdater->cleanup() ? 'DONE' : 'FAILED';
+        self::$logger->info("Cleaning DNS status: {$dnsResult}");
     }
 }
