@@ -19,6 +19,7 @@ class Program
     public function __construct()
     {
         $this->dnsRecordUpdater = new DnsRecordUpdater();
+        $this->wellKnownUpdater = new WellKnownUpdater();
 
         // Setup logger
         self::$logger = new Logger('LetsEncrypt');
